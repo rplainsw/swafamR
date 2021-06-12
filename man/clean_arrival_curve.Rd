@@ -13,6 +13,9 @@ clean_arrival_curve(data, minute_bin = 5)
 
 \item{minute_bin}{integer: bin the departure time}
 }
+\value{
+dataframe
+}
 \description{
 Group arrivals and get percentage of PAX arriving in given time
 bin prior to departure. Arranges vector into a wide format to join

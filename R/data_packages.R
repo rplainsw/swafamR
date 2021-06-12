@@ -19,6 +19,7 @@ dbConnectSQLite <- function(SQLiteDB) {
 #' @importFrom rlang .data
 #' @param data tibble: of load factors from DB
 #' @param minute_bin integer: bin the departure time
+#' @return dataframe
 #' @export
 
 clean_load_factors <- function(data, minute_bin = 10) {
@@ -36,6 +37,7 @@ clean_load_factors <- function(data, minute_bin = 10) {
 #' Proxy logic for new stations to use paired station historical data
 #'
 #' @param data dataframe: col required 'orig'
+#' @return dataframe
 #' @export
 
 update_new_stations <- function(data) {
@@ -78,6 +80,7 @@ update_new_stations <- function(data) {
 #'
 #' @param data dataframe
 #' @param minute_bin integer: bin the departure time
+#' @return dataframe
 #' @export
 
 clean_arrival_curve <- function(data, minute_bin=5) {
@@ -102,3 +105,101 @@ clean_arrival_curve <- function(data, minute_bin=5) {
     )
 
 }
+
+#' Pull in assumptions from quickbase
+#' @return dataframe
+#' @export
+
+generate_station_assumptions <- function() {
+
+  url <- 'https://southwest.quickbase.com/db/bj36xdfn2?a=API_DoQuery&usertoken=b2pyfd_fzh_cjgmnn9ce7z3vwcjbkkxteb9r49'
+  url2 <- 'https://southwest.quickbase.com/db/bj3zqje49?a=API_DoQuery&usertoken=b2pyfd_fzh_cjgmnn9ce7z3vwcjbkkxteb9r49'
+  x <- xml2::read_xml(url)
+  y <- xml2::read_xml(url2)
+  myXML <- XML::xmlParse(x)
+  myXML2 <- XML::xmlParse(y)
+
+  df <- XML::xmlToDataFrame(myXML, stringsAsFactors = FALSE) %>%
+    dplyr::mutate_all(~utils::type.convert(., as.is = TRUE)) %>%
+    janitor::clean_names() %>%
+    dplyr::select(station = .data$station_assumption_station_code,
+           .data$full_service_positions_of_screens_customer_touch_points:.data$station_assumption_bag_make_up_device_type) %>%
+    dplyr::filter(!is.na(.data$station)) %>%
+    dplyr::as_tibble()
+
+  df2 <- XML::xmlToDataFrame(myXML2, stringsAsFactors = FALSE) %>%
+    dplyr::rename(station = .data$station_code) %>%
+    dplyr::select(.data$station, .data$system_throughput) %>%
+    dplyr::mutate(system_throughput = as.numeric(.data$system_throughput))
+
+  dplyr::left_join(df, df2, by='station')
+
+}
+
+
+
+adjust_pgds_bins <- function(df_pgds, minute_bin=5) {
+
+  df_pgds2 <- df_pgds %>%
+    dplyr::filter(!is.na(.data$distance)) %>%
+    dplyr::rename(before_9 = .data$timeframe) %>%
+    dplyr::mutate(before_9 = .data$before_9 == 'Pre')
+
+  temp_var <- ifelse(minute_bin == 5, 2, ifelse(minute_bin == 2, 5, 1))
+  message(glue::glue("Minute Bin: {minute_bin}  Temp Var: {temp_var}"))
+
+  df_pgds2 %>%
+    dplyr::mutate(domestic = .data$distance == 'Domestic') %>%
+    dplyr::rename_at(dplyr::vars(dplyr::starts_with("perc_bin")), stringr::str_replace, "perc_bin", "") %>%
+    dplyr::relocate(.data$domestic, .after = .data$before_9) %>%
+    dplyr::select(-.data$distance) %>%
+    tidyr::pivot_longer(
+      cols = !.data$before_9:.data$domestic,
+      names_to = 'minutes_prior',
+      values_to = 'perc_bin'
+    ) %>%
+    dplyr::mutate(minutes_prior = as.numeric(.data$minutes_prior)) %>%
+    dplyr::mutate(temp = list(0:9)) %>%
+    tidyr::unnest(cols = c(.data$temp)) %>%
+    dplyr::mutate(minutes_prior = .data$minutes_prior - .data$temp) %>%
+    dplyr::arrange(.data$domestic, .data$before_9, .data$minutes_prior) %>%
+    dplyr::filter(.data$minutes_prior %% .data$minute_bin == 0) %>%
+    dplyr::mutate(perc_bin = .data$perc_bin/temp_var) %>%
+    dplyr::select(-.data$temp) %>%
+    tidyr::pivot_wider(
+      id_cols = .data$before_9:.data$domestic,
+      names_from = .data$minutes_prior,
+      values_from = .data$perc_bin
+    ) %>%
+    dplyr::mutate(oa = TRUE)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

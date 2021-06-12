@@ -9,6 +9,9 @@ update_new_stations(data)
 \arguments{
 \item{data}{dataframe: col required 'orig'}
 }
+\value{
+dataframe
+}
 \description{
 Proxy logic for new stations to use paired station historical data
 }

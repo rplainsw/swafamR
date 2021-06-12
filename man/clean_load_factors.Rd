@@ -12,6 +12,9 @@ clean_load_factors(data, minute_bin = 10)
 
 \item{minute_bin}{integer: bin the departure time}
 }
+\value{
+dataframe
+}
 \description{
 Clean load factors from DB, filter out for orig-dest-dep hour
 pairings that have less than 2 flights

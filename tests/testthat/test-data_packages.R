@@ -47,3 +47,13 @@ test_that("clean arrival curve works", {
                  sum(), 1)
 
 })
+
+
+test_that("assumptions work", {
+
+  x <- generate_station_assumptions() %>%
+    dplyr::pull(.data$station) %>%
+    length()
+
+  expect_gt(x, 50)
+})

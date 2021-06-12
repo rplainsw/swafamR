@@ -3,6 +3,7 @@
 export(clean_arrival_curve)
 export(clean_load_factors)
 export(dbConnectSQLite)
+export(generate_station_assumptions)
 export(update_new_stations)
 importFrom(magrittr,"%>%")
 importFrom(rlang,.data)
