@@ -10,7 +10,7 @@ clean_load_factors(data, minute_bin = 10)
 \arguments{
 \item{data}{tibble: of load factors from DB}
 
-\item{minute_bin}{integer: bin the dep_int}
+\item{minute_bin}{integer: bin the departure time}
 }
 \description{
 Clean load factors from DB, filter out for orig-dest-dep hour

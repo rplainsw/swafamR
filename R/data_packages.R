@@ -18,7 +18,7 @@ dbConnectSQLite <- function(SQLiteDB) {
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data
 #' @param data tibble: of load factors from DB
-#' @param minute_bin integer: bin the dep_int
+#' @param minute_bin integer: bin the departure time
 #' @export
 
 clean_load_factors <- function(data, minute_bin = 10) {
@@ -69,5 +69,36 @@ update_new_stations <- function(data) {
 
   data %>%
     dplyr::bind_rows(new_stations)
+
+}
+
+#' Group arrivals and get percentage of PAX arriving in given time
+#' bin prior to departure. Arranges vector into a wide format to join
+#' onto each flight.
+#'
+#' @param data dataframe
+#' @param minute_bin integer: bin the departure time
+#' @export
+
+clean_arrival_curve <- function(data, minute_bin=5) {
+
+  data %>%
+    dplyr::mutate(min_prior_arr = (
+      floor(.data$min_prior_arr/minute_bin) * minute_bin
+    ) + minute_bin) %>%
+    dplyr::mutate(min_prior_arr = ifelse(
+      .data$min_prior_arr > 240, 240, .data$min_prior_arr
+    )) %>%
+    dplyr::group_by(.data$orig, .data$before_9) %>%
+    dplyr::mutate(total_pax = sum(.data$total, na.rm = TRUE)) %>%
+    dplyr::ungroup() %>%
+    dplyr::group_by(.data$orig, .data$before_9, .data$min_prior_arr, .data$total_pax) %>%
+    dplyr::summarise(pax_in_bin = sum(.data$total, na.rm = TRUE), .groups = 'drop') %>%
+    dplyr::mutate(perc_bin = .data$pax_in_bin/.data$total_pax) %>%
+    tidyr::pivot_wider(
+      id_cols = c(.data$orig, .data$before_9),
+      names_from = .data$min_prior_arr,
+      values_from = .data$perc_bin
+    )
 
 }

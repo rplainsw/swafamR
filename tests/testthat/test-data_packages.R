@@ -30,3 +30,20 @@ test_that("update stations works", {
   expect_equal(nrow(df), 2)
 
 })
+
+test_that("clean arrival curve works", {
+
+  df <- tibble::tibble(
+    orig = rep('DAL', 5),
+    before_9 = rep(1, 5),
+    min_prior_arr = round(runif(5, 5, 160)),
+    total = round(runif(5, 1, 100))
+  ) %>%
+    clean_arrival_curve()
+
+  expect_equal(df %>%
+                 tidyr::pivot_longer(cols = !orig:before_9) %>%
+                 dplyr::pull(value) %>%
+                 sum(), 1)
+
+})

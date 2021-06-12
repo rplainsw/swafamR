@@ -19,7 +19,8 @@ Imports:
     magrittr (>= 2.0.1),
     rlang (>= 0.4.11),
     RSQLite (>= 2.2.7),
-    tibble (>= 3.0.4)
+    tibble (>= 3.0.4),
+    tidyr (>= 1.1.2)
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
