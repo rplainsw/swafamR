@@ -8,6 +8,7 @@ Authors@R:
            email = "ryan.plain@wnco.com",
            comment = c(ORCID = "YOUR-ORCID-ID"))
 Description: Provides code to run the facilities assesment model, modeling SWA airports.
+Depends: R (>= 2.10)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
