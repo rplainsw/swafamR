@@ -163,7 +163,7 @@ adjust_pgds_bins <- function(df_pgds, minute_bin=5) {
     tidyr::unnest(cols = c(.data$temp)) %>%
     dplyr::mutate(minutes_prior = .data$minutes_prior - .data$temp) %>%
     dplyr::arrange(.data$domestic, .data$before_9, .data$minutes_prior) %>%
-    dplyr::filter(.data$minutes_prior %% .data$minute_bin == 0) %>%
+    dplyr::filter(.data$minutes_prior %% minute_bin == 0) %>%
     dplyr::mutate(perc_bin = .data$perc_bin/temp_var) %>%
     dplyr::select(-.data$temp) %>%
     tidyr::pivot_wider(

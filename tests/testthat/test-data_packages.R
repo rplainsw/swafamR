@@ -57,3 +57,39 @@ test_that("assumptions work", {
 
   expect_gt(x, 50)
 })
+
+
+
+test_that("pgds works", {
+
+  min_10 <- df_pgds %>%
+    adjust_pgds_bins(minute_bin = 10) %>%
+    dim()
+
+  min_5 <- df_pgds %>%
+    adjust_pgds_bins(minute_bin = 5) %>%
+    dim()
+
+  min_1 <- df_pgds %>%
+    adjust_pgds_bins(minute_bin = 1) %>%
+    dim()
+
+  expect_equal(sum(min_10), 23)
+  expect_equal(sum(min_5), 39)
+  expect_equal(sum(min_1), 167)
+
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
