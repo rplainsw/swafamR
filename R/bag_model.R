@@ -1,3 +1,9 @@
+
+#' Join arrival curve to flight schedule
+#'
+#' @param mod_inputs list: all data packages
+#' @param minute_bin integer: bin the departure times
+#' @return dataframe
 join_flight_sched_arr_curve <- function(mod_inputs, minute_bin) {
 
   df_arr_curve <- mod_inputs$arr_curve %>%
@@ -28,7 +34,6 @@ join_flight_sched_arr_curve <- function(mod_inputs, minute_bin) {
 #' @importFrom rlang :=
 #' @importFrom rlang sym
 #' @return dataframe
-#' @export
 tiered_factor_logic <- function(df) {
 
   params <- df %>%
@@ -76,7 +81,11 @@ tiered_factor_logic <- function(df) {
 
 }
 
-
+#' Implement the tiered_factor_logic on all factors
+#'
+#' @param flight_schedule dataframe
+#' @param factors character
+#' @return dataframe
 aggregate_tiers <- function(flight_schedule, factors) {
 
   dat <- factors %>%
@@ -100,6 +109,18 @@ aggregate_tiers <- function(flight_schedule, factors) {
 
 }
 
+#' Main function for Bag Model
+#'
+#' Take the base of a flight schedule, join appropriate arrival curves.
+#' Aggregate and join all the model factors. For OA's, the df_oa_local
+#' dataframe is used for orig_factor percentages. Filter out what carriers
+#' are needed based on shared_checkpoints dataframe.
+#' Finally, create expected demand columns.
+#'
+#' @param mod_inputs list: all data packages
+#' @param minute_bin integer: bin the departure times
+#' @return dataframe
+#' @export
 bag_model <- function(mod_inputs, minute_bin) {
 
   load_factors <- aggregate_tiers(mod_inputs$flight_schedule,
