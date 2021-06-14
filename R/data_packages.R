@@ -3,7 +3,6 @@
 #' @param SQLiteDB A string
 #' @return DB Connection
 #' @export
-
 dbConnectSQLite <- function(SQLiteDB) {
 
   DBI::dbConnect(
@@ -21,7 +20,6 @@ dbConnectSQLite <- function(SQLiteDB) {
 #' @param minute_bin integer: bin the departure time
 #' @return dataframe
 #' @export
-
 clean_load_factors <- function(data, minute_bin = 10) {
 
   data %>%
@@ -39,7 +37,6 @@ clean_load_factors <- function(data, minute_bin = 10) {
 #' @param data dataframe: col required 'orig'
 #' @return dataframe
 #' @export
-
 update_new_stations <- function(data) {
 
   old_stations <- c(
@@ -82,7 +79,6 @@ update_new_stations <- function(data) {
 #' @param minute_bin integer: bin the departure time
 #' @return dataframe
 #' @export
-
 clean_arrival_curve <- function(data, minute_bin=5) {
 
   data %>%
@@ -109,7 +105,6 @@ clean_arrival_curve <- function(data, minute_bin=5) {
 #' Pull in assumptions from quickbase
 #' @return dataframe
 #' @export
-
 generate_station_assumptions <- function() {
 
   url <- 'https://southwest.quickbase.com/db/bj36xdfn2?a=API_DoQuery&usertoken=b2pyfd_fzh_cjgmnn9ce7z3vwcjbkkxteb9r49'

@@ -8,7 +8,11 @@ carousel_arrival_curve <- function(.data) {
     dplyr::mutate_all(~replace(., is.na(.), 0))
 }
 
-
+#' Carousel model
+#'
+#' @param df_bag_model dataframe
+#' @param minutes_prior_bag_pickup integer
+#' @export
 carousel_model <- function(df_bag_model, minutes_prior_bag_pickup=120) {
 
   arrival_curve_caro <- carousel_arrival_curve(df_bag_model)

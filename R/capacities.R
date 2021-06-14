@@ -1,4 +1,4 @@
-
+#' @keywords internal
 carousel_capacity <- function(data, ...) {
 
   data %>%
@@ -12,7 +12,7 @@ carousel_capacity <- function(data, ...) {
 
 }
 
-
+#' @keywords internal
 flight_count <- function(data) {
 
   data %>%
@@ -20,7 +20,7 @@ flight_count <- function(data) {
 
 }
 
-
+#' @keywords internal
 plane_type_counts <- function(.data) {
 
   .data %>%
@@ -33,6 +33,7 @@ plane_type_counts <- function(.data) {
 
 }
 
+#' @keywords internal
 generate_capacities <- function(data, ...) {
 
   data %>%
@@ -60,8 +61,10 @@ generate_capacities <- function(data, ...) {
 
 }
 
+#' @keywords internal
 RobustMax <- function(x) {if (length(x)>0) max(x, na.rm = TRUE) else 0}
 
+#' @keywords internal
 increment_logic <- function(data, col_metric, col_cap) {
 
   data %>%

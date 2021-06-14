@@ -21,6 +21,7 @@ Imports:
     janitor (>= 2.0.1),
     lubridate (>= 1.7.9.2),
     magrittr (>= 2.0.1),
+    purrr (>= 0.3.4),
     rlang (>= 0.4.11),
     RSQLite (>= 2.2.7),
     stringr (>= 1.4.0),
