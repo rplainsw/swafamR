@@ -169,7 +169,53 @@ adjust_pgds_bins <- function(df_pgds, minute_bin=5) {
     dplyr::mutate(oa = TRUE)
 }
 
+#' List of Model Inputs
+#'
+#' @param dat_pack DB Object
+#' @param minute_bin integer
+#' @export
+assign_mod_inputs <- function(dat_pack, minute_bin=5) {
 
+  flight_schedule <- NULL
+
+  load_factors <- NULL
+
+  bag_factors <- NULL
+
+  arr_curve <- dplyr::tbl(dat_pack, "ARRIVAL_CURVE") %>%
+    dplyr::collect() %>%
+    clean_arrival_curve(minute_bin = 10)
+
+  assumptions <- generate_station_assumptions()
+
+  contact_ratios <- dplyr::tbl(dat_pack, "CONTACT_RATIOS") %>%
+    dplyr::collect()
+
+  pre_check_perc <- dplyr::tbl(dat_pack, "PRE_CHECK") %>%
+    dplyr::collect()
+
+  gate_counts <- dplyr::tbl(dat_pack, "GATES") %>%
+    dplyr::collect() %>%
+    dplyr::mutate(buffer = ceiling(.data$buffer/minute_bin) * minute_bin,
+           ron = ceiling(.data$buffer/minute_bin) * minute_bin)
+
+  shared_checkpoints <- dplyr::tbl(dat_pack, "SHARED_CHECKPOINT") %>%
+    dplyr::collect() %>%
+    dplyr::mutate(dplyr::across(c('cart_staging', 'checkpoint', 'cbis', 'cbra'), as.numeric))
+
+  list(
+    flight_schedule = flight_schedule,
+    load_factors = load_factors,
+    bag_factors = bag_factors,
+    arr_curve = arr_curve,
+    assumptions = assumptions,
+    contact_ratios = contact_ratios,
+    pre_check_perc = pre_check_perc,
+    gate_counts = gate_counts,
+    shared_checkpoints = shared_checkpoints
+  )
+
+}
 
 
 

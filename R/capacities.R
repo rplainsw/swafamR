@@ -82,7 +82,7 @@ increment_logic <- function(data, col_metric, col_cap) {
       start_run = ifelse(.data$counter == 1 & dplyr::lag(.data$counter) == 0, 1, 0),
       end_run = ifelse(.data$counter == 1 & dplyr::lead(.data$counter) == 0, 1, 0)
     ) %>%
-    dplyr::mutate(rn = .data$row_number()) %>%
+    dplyr::mutate(rn = dplyr::row_number()) %>%
     dplyr::filter(.data$end_run > 0 | .data$start_run > 0) %>%
     dplyr::mutate(length_run = .data$rn - dplyr::lag(.data$rn)) %>%
     dplyr::filter(.data$end_run == 1) %>%
