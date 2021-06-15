@@ -8,16 +8,8 @@
 
 The goal of swafamR is to …
 
-## Installation
-
-You can install the released version of swafamR from
-[CRAN](https://CRAN.R-project.org) with:
-
-``` r
-install.packages("swafamR")
-```
-
-And the development version from [GitHub](https://github.com/) with:
+You can install the released version of swafamR the development version
+from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
