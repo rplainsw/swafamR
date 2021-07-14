@@ -1,4 +1,4 @@
-
+#' @export
 join_tpoint_models <- function(df_bag_model, minute_bin = 5) {
 
   df_bag_model %>%
@@ -16,6 +16,7 @@ join_tpoint_models <- function(df_bag_model, minute_bin = 5) {
 
 }
 
+#' @export
 join_increments <- function(df_final_output) {
 
   counter <- list(
@@ -98,7 +99,7 @@ join_increments <- function(df_final_output) {
 main_model <- function(mod_inputs, minute_bin = 5) {
 
   message("Bag Model")
-  df_bag_model <- bag_model(mod_inputs = mod_inputs, minute_bin = 10)
+  df_bag_model <- bag_model(mod_inputs = mod_inputs, minute_bin = minute_bin)
 
   message("Tpoint Model")
   df_tpoint_model  <- df_bag_model %>%
@@ -160,7 +161,8 @@ main_model <- function(mod_inputs, minute_bin = 5) {
     dplyr::rename(station = .data$orig)
 
   df_final_output <- df_final_output %>%
-    dplyr::left_join(df_final_output %>% join_increments(), by='station')
+    dplyr::left_join(df_final_output %>% join_increments(), by='station') %>%
+    dplyr::filter(.data$model_date = max(.data$model_date))
 
 
 }
