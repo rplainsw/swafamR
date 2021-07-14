@@ -62,5 +62,10 @@ pax_model <- function(df_bag_model) {
     dplyr::left_join(df2, by=c('orig','carrier','time')) %>%
     dplyr::left_join(df3, by=c('orig','carrier','time'))
 
+  df_pax <- df_pax %>%
+    dplyr::group_by(.data$orig, .data$time) %>%
+    dplyr::mutate(total_bag_demand = sum(.data$bag_demand, na.rm = TRUE)) %>%
+    dplyr::ungroup()
+
   df_pax
 }

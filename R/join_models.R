@@ -21,7 +21,7 @@ join_increments <- function(df_final_output) {
   counter <- list(
 
     bags = df_final_output %>%
-      increment_logic('bag_demand' , 'bag_capacity') %>%
+      increment_logic('total_bag_demand' , 'bag_capacity') %>%
       dplyr::rename(bag_counter = .data$x),
 
     reg_check = df_final_output %>%
@@ -135,7 +135,7 @@ main_model <- function(mod_inputs, minute_bin = 5) {
     dplyr::left_join(df_tpoint_model, by=c('orig','time','carrier')) %>%
     dplyr::left_join(df_checkpoint_model, by=c('orig','time','carrier')) %>%
     dplyr::left_join(df_service_stations_model %>%
-                dplyr::select(-.data$bag_demand, -.data$pax_demand, -.data$pax_wbag_demand),
+                dplyr::select(-.data$bag_demand, -.data$pax_demand, -.data$pax_wbag_demand, -.data$total_bag_demand),
               by=c('orig', 'time', 'carrier')) %>%
     dplyr::left_join(df_carousel_model, by=c('orig','time','carrier')) %>%
     dplyr::rename(bags_on_carousel_180 = .data$bags_on_carousel) %>%
@@ -153,6 +153,9 @@ main_model <- function(mod_inputs, minute_bin = 5) {
       bag_demand = ifelse(.data$carrier == 'WN', .data$bag_demand, .data$bag_demand * .data$cbis),
       run_date = Sys.Date(),
       weekday = lubridate::wday(.data$time, label = TRUE, abbr = FALSE),
+      model_date = lubridate::as_date(.data$time),
+      schedule = lubridate::month(.data$time, label = TRUE, abbr = FALSE),
+      report_type = 'Scheduled',
       year = lubridate::year(.data$time)) %>%
     dplyr::rename(station = .data$orig)
 
