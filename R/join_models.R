@@ -44,7 +44,7 @@ join_increments <- function(df_final_output) {
 
     stk = df_final_output %>%
       dplyr::filter(.data$carrier == 'WN') %>%
-      dplyr::mutate(stk_capacity = 0.5) %>%
+      dplyr::mutate(stk_capacity = 1) %>%
       increment_logic('stk_wait_time','stk_capacity')%>%
       dplyr::rename(stk_counter = .data$x) ,
 
@@ -71,15 +71,45 @@ join_increments <- function(df_final_output) {
       increment_logic('parrallel_carts', 'tpoint_capacity_lf')%>%
       dplyr::rename(parallel_counter = .data$x),
 
+    parallel_150 = df_final_output %>%
+      dplyr::filter(.data$carrier == 'WN') %>%
+      increment_logic('parrallel_carts_150', 'tpoint_capacity_lf')%>%
+      dplyr::rename(parallel_counter_150 = .data$x),
+
+    parallel_180 = df_final_output %>%
+      dplyr::filter(.data$carrier == 'WN') %>%
+      increment_logic('parrallel_carts_180', 'tpoint_capacity_lf')%>%
+      dplyr::rename(parallel_counter_180 = .data$x),
+
     perpendicular = df_final_output %>%
       dplyr::filter(.data$carrier == 'WN') %>%
       increment_logic('perpendicular_carts', 'tpoint_capacity_lf')%>%
       dplyr::rename(perpendicular_counter = .data$x),
 
+    perpendicular_150 = df_final_output %>%
+      dplyr::filter(.data$carrier == 'WN') %>%
+      increment_logic('perpendicular_carts_150', 'tpoint_capacity_lf')%>%
+      dplyr::rename(perpendicular_counter_150 = .data$x),
+
+    perpendicular_180 = df_final_output %>%
+      dplyr::filter(.data$carrier == 'WN') %>%
+      increment_logic('perpendicular_carts_180', 'tpoint_capacity_lf')%>%
+      dplyr::rename(perpendicular_counter_180 = .data$x),
+
     bags_on_carousel = df_final_output %>%
       dplyr::filter(.data$carrier == 'WN', carousel_capacity > 0) %>%
       increment_logic('bags_on_carousel_120', 'carousel_capacity')%>%
-      dplyr::rename(carousel_counter = .data$x)
+      dplyr::rename(carousel_counter = .data$x),
+
+    bags_on_carousel_150 = df_final_output %>%
+      dplyr::filter(.data$carrier == 'WN', carousel_capacity > 0) %>%
+      increment_logic('bags_on_carousel_150', 'carousel_capacity')%>%
+      dplyr::rename(carousel_counter_150 = .data$x),
+
+    bags_on_carousel_180 = df_final_output %>%
+      dplyr::filter(.data$carrier == 'WN', carousel_capacity > 0) %>%
+      increment_logic('bags_on_carousel_180', 'carousel_capacity')%>%
+      dplyr::rename(carousel_counter_180 = .data$x)
 
   )  %>%
     purrr::reduce(dplyr::full_join, by = "station") %>%
@@ -143,7 +173,7 @@ main_model <- function(mod_inputs, minute_bin = 5) {
     dplyr::left_join(mod_inputs$assumptions %>%
                 generate_capacities(),
               by=c('orig'='station')) %>%
-    dplyr::left_join(mod_inputs$flight_schedule %>%
+    dplyr::full_join(mod_inputs$flight_schedule %>%
                 flight_count(),
               by=c('orig', 'carrier', 'time'='dep_dttm')) %>%
     dplyr::left_join(mod_inputs$flight_schedule %>%
@@ -162,7 +192,8 @@ main_model <- function(mod_inputs, minute_bin = 5) {
 
   df_final_output <- df_final_output %>%
     dplyr::left_join(df_final_output %>% join_increments(), by='station') %>%
-    dplyr::filter(.data$model_date = max(.data$model_date))
+    dplyr::mutate_if(is.numeric, ~replace(., is.na(.), 0)) %>%
+    dplyr::mutate_if(is.integer, ~replace(., is.na(.), 0))
 
 
 }

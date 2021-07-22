@@ -50,7 +50,7 @@ distribute_demand <- function(df_bag_model, vector_name, col_name) {
 #' @export
 pax_model <- function(df_bag_model) {
 
-  df1 <- distribute_demand(df_bag_model, "expected_bag", "bag_demand") %>%
+  df1 <- distribute_demand(df_bag_model %>% dplyr::filter(.data$carrier == 'WN' | .data$cbis == 1), "expected_bag", "bag_demand") %>%
     dplyr::rename(bag_demand = .data$col_name) %>%
     dplyr::arrange(.data$time)
   df2 <- distribute_demand(df_bag_model, "expected_pax", "pax_demand") %>%
