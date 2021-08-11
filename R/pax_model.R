@@ -53,13 +53,15 @@ pax_model <- function(df_bag_model) {
   df1 <- distribute_demand(df_bag_model %>% dplyr::filter(.data$carrier == 'WN' | .data$cbis == 1), "expected_bag", "bag_demand") %>%
     dplyr::rename(bag_demand = .data$col_name) %>%
     dplyr::arrange(.data$time)
+
   df2 <- distribute_demand(df_bag_model, "expected_pax", "pax_demand") %>%
     dplyr::rename(pax_demand = .data$col_name)
+
   df3 <- distribute_demand(df_bag_model, "expected_pax_wbag", "pax_wbag_demand") %>%
     dplyr::rename(pax_wbag_demand = .data$col_name)
 
-  df_pax <- df1 %>%
-    dplyr::left_join(df2, by=c('orig','carrier','time')) %>%
+  df_pax <- df2 %>%
+    dplyr::left_join(df1, by=c('orig','carrier','time')) %>%
     dplyr::left_join(df3, by=c('orig','carrier','time'))
 
   df_pax <- df_pax %>%

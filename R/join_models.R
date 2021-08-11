@@ -68,32 +68,32 @@ join_increments <- function(df_final_output) {
 
     parallel = df_final_output %>%
       dplyr::filter(.data$carrier == 'WN') %>%
-      increment_logic('parrallel_carts', 'tpoint_capacity_lf')%>%
+      increment_logic('parrallel_carts_total', 'tpoint_capacity_lf')%>%
       dplyr::rename(parallel_counter = .data$x),
 
     parallel_150 = df_final_output %>%
       dplyr::filter(.data$carrier == 'WN') %>%
-      increment_logic('parrallel_carts_150', 'tpoint_capacity_lf')%>%
+      increment_logic('parrallel_carts_total_150', 'tpoint_capacity_lf')%>%
       dplyr::rename(parallel_counter_150 = .data$x),
 
     parallel_180 = df_final_output %>%
       dplyr::filter(.data$carrier == 'WN') %>%
-      increment_logic('parrallel_carts_180', 'tpoint_capacity_lf')%>%
+      increment_logic('parrallel_carts_total_180', 'tpoint_capacity_lf')%>%
       dplyr::rename(parallel_counter_180 = .data$x),
 
     perpendicular = df_final_output %>%
       dplyr::filter(.data$carrier == 'WN') %>%
-      increment_logic('perpendicular_carts', 'tpoint_capacity_lf')%>%
+      increment_logic('perpendicular_carts_total', 'tpoint_capacity_lf')%>%
       dplyr::rename(perpendicular_counter = .data$x),
 
     perpendicular_150 = df_final_output %>%
       dplyr::filter(.data$carrier == 'WN') %>%
-      increment_logic('perpendicular_carts_150', 'tpoint_capacity_lf')%>%
+      increment_logic('perpendicular_carts_total_150', 'tpoint_capacity_lf')%>%
       dplyr::rename(perpendicular_counter_150 = .data$x),
 
     perpendicular_180 = df_final_output %>%
       dplyr::filter(.data$carrier == 'WN') %>%
-      increment_logic('perpendicular_carts_180', 'tpoint_capacity_lf')%>%
+      increment_logic('perpendicular_carts_total_180', 'tpoint_capacity_lf')%>%
       dplyr::rename(perpendicular_counter_180 = .data$x),
 
     bags_on_carousel = df_final_output %>%

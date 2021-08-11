@@ -44,8 +44,14 @@ tpoint_model <- function(df_bag_model, cart_staging_time=120, minute_bin=5) {
                   ncarts = ifelse(.data$minutes_prior <= 60, .data$ncarts-1, .data$ncarts)) %>%
     dplyr::group_by(.data$orig, .data$carrier, .data$time) %>%
     dplyr::summarise(ncarts = sum(.data$ncarts), .groups = 'drop') %>%
+    dplyr::ungroup() %>%
+    dplyr::group_by(.data$orig, .data$time) %>%
+    dplyr::mutate(total_carts = sum(.data$ncarts)) %>%
+    dplyr::ungroup() %>%
     dplyr::mutate(parrallel_carts = .data$ncarts * 12,
-                  perpendicular_carts = .data$ncarts * 8.5)
+                  perpendicular_carts = .data$ncarts * 8.5,
+                  parrallel_carts_total = .data$total_carts * 12,
+                  perpendicular_carts_total = .data$total_carts * 8.5)
 
   tpoint
 }

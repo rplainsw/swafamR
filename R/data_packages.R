@@ -118,7 +118,7 @@ generate_station_assumptions <- function() {
     dplyr::mutate_all(~utils::type.convert(., as.is = TRUE)) %>%
     janitor::clean_names() %>%
     dplyr::select(station = .data$station_assumption_station_code,
-           .data$full_service_positions_of_screens_customer_touch_points:.data$station_assumption_bag_make_up_device_type) %>%
+                  .data$full_service_positions_of_screens_customer_touch_points:.data$station_assumption_bag_make_up_device_type) %>%
     dplyr::filter(!is.na(.data$station)) %>%
     dplyr::as_tibble()
 
@@ -197,7 +197,7 @@ assign_mod_inputs <- function(dat_pack, minute_bin=5) {
   gate_counts <- dplyr::tbl(dat_pack, "GATES") %>%
     dplyr::collect() %>%
     dplyr::mutate(buffer = ceiling(.data$buffer/minute_bin) * minute_bin,
-           ron = ceiling(.data$buffer/minute_bin) * minute_bin)
+                  ron = ceiling(.data$buffer/minute_bin) * minute_bin)
 
   shared_checkpoints <- dplyr::tbl(dat_pack, "SHARED_CHECKPOINT") %>%
     dplyr::collect() %>%
@@ -216,31 +216,3 @@ assign_mod_inputs <- function(dat_pack, minute_bin=5) {
   )
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
